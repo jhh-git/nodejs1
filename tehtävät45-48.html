@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NodeJS1</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
+  <style>
+  label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+table, th, td {
+  border: 1px solid black;
+}
+
+colgroup {
+  display: table-column-group;
+} 
+</style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+
+$(document).ready(function(){
+ 
+    $.get("http://127.0.0.1:3000/asiakastyypit", function(data, status){
+      console.log(data);
+      data1 = "<option value=*>ei valintaa</option>";
+      data1 += data;
+	    $("#asty").html(data1);
+	  	$("#uusiasty").html(data);
+    });
+});
+
+function hae() {
+  
+  var url = "http://127.0.0.1:3000/asiakas";
+  var nimi = document.getElementById("nimi").value;
+  var osoite = document.getElementById("osoite").value;
+ if (nimi.length == 0)
+ {nimi = "*";}
+ if (osoite.length == 0)
+ {osoite = "*";}
+ url+= "/nimi="+nimi;
+ url+= "/osoite="+osoite;
+ url+= "/asty="+document.getElementById("asty").value;
+alert(url);
+$.get(url, function(data, status){
+
+  $("#tulokset").html(data);
+     
+    });
+  };
+
+  $( function() {
+    var dialog, form,
+  
+    dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Lisää käyttäjä": addUser,
+        "Sulje": function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+       
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      addUser();
+    });
+ 
+    $( "#create-user" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+  } );
+  
+  
+  
+    function addUser() {
+
+var addurl = "http://127.0.0.1:3000/uusiasiakas";
+addurl += "/nimi="+uusinimi.value;
+addurl += "/osoite="+uusiosoite.value;
+addurl += "/postinro="+uusipostinro.value;
+addurl += "/postitmp="+uusipostitmp.value;
+addurl += "/asty="+uusiasty.value;
+
+	 $.post(addurl, { });
+      
+		hae();
+		
+		document.getElementById("uusinimi").value = "";
+		document.getElementById("uusiosoite").value ="";
+		document.getElementById("uusipostinro").value ="";
+		document.getElementById("uusipostitmp").value ="";
+		
+		
+		
+        dialog.dialog( "close" );
+		
+		//form[ 0 ].reset();
+      }
+
+
+
+
+</script>
+</head>
+<body>
+<label for="nimi">Nimi:</label><br>
+<input type="text" id="nimi" name="nimi"><br>
+<label for="osoite">Osoite:</label><br>
+<input type="text" id="osoite" name="osoite" value=""><br>
+<label for="asty">Asiakastyyppi:</label><br>
+  <select id="asty">
+    
+  </select>
+</form>
+<br>
+
+
+
+<br>
+<button id="ajaxButton" onclick="hae()">Hae</button>
+<br>
+
+<table id="tulokset">
+  
+</table>
+
+<div id="dialog-form" title="Lisää uusi käyttäjä">
+  
+ 
+  <form>
+    <fieldset>
+      <label for="uusinimi">Nimi</label>
+      <input type="text" id="uusinimi" value="" class="text ui-widget-content ui-corner-all">
+      <label for="uusiosoite">Osoite</label>
+      <input type="text" name="uusiosoite" id="uusiosoite" value="" class="text ui-widget-content ui-corner-all">
+	  
+    <label for="uusipostinro">Postinumero</label>
+	<input type="text" name="uusipostinro" id="uusipostinro"  value="" class="text ui-widget-content ui-corner-all">
+	 <label for="uusipostitmp">Postitoimipaikka</label>
+	<input type="text" name="uusipostitmp" id="uusipostitmp" value="" class="text ui-widget-content ui-corner-all">
+     
+ <label for="uusiasty">Asiakastyyppi:</label><br>
+  <select id="uusiasty">
+      
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+ 
+<div id="users-contain" class="ui-widget">
+  
+  <table id="users" class="ui-widget ui-widget-content">
+    
+    <tbody>
+      <tr>
+     
+        
+      </tr>
+    </tbody>
+  </table>
+</div>
+<button id="create-user">Lisää uusi käyttäjä</button>
+ 
+ 
+</body>
+
+</html>
